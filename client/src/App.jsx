@@ -7,7 +7,7 @@ function App() {
   // CÂU 47: Lấy dữ liệu với Link API mới
   const fetchStudents = async () => {
     try {
-      const response = await fetch('https://musical-rotary-phone-q76r5rw49jw9h94j9-5000.app.github.dev/api/students');
+      const response = await fetch('http://localhost:5000/api/students');
       const data = await response.json();
       setStudents(data);
     } catch (error) {
@@ -23,7 +23,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://musical-rotary-phone-q76r5rw49jw9h94j9-5000.app.github.dev/api/students', {
+      const response = await fetch('http://localhost:5000/api/students', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
