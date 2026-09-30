@@ -42,7 +42,7 @@ function App() {
 
   return (
     <div style={{ padding: '30px', fontFamily: 'Arial, sans-serif' }}>
-      <h2 style={{ color: '#0056b3' }}>Quản Lý Sinh Viên</h2>
+      <h2 style={{ color: '#0056b3' }}>Quản Lý Sinh Viên - Phiên bản 2.0</h2>
       
       <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ccc', borderRadius: '5px' }}>
         <h4 style={{ marginTop: 0 }}>Thêm Sinh Viên Mới</h4>
