@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = 'https://mern-backend-234975.onrender.com/api/students';
+const API_URL = '/api/students';
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -123,7 +123,13 @@ function App() {
       <h2 style={{ color: '#0056b3' }}>
         Quản Lý Sinh Viên
       </h2>
-
+<p style={{
+  color: '#6c757d',
+  marginTop: '-10px',
+  marginBottom: '20px'
+}}>
+  Phiên bản ứng dụng: v2.0
+</p>
       <div
         style={{
           marginBottom: '20px',

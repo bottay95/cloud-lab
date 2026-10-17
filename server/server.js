@@ -1,42 +1,129 @@
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Student = require('./models/Student');
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+require('dotenv').config();
 
-// Kết nối với MongoDB Atlas của bạn
-mongoose.connect('mongodb+srv://buicongtay:congtay123@cluster0.9ojkgmm.mongodb.net/cloud_lab?appName=Cluster0')
+const app = express();
+
+// =========================
+// KIỂM TRA AUTO-DEPLOY
+// =========================
+console.log('Backend v1.2 - Auto Deploy test lan 2');
+
+// =========================
+// CẤU HÌNH CORS
+// =========================
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:3000'
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
+app.use(express.json());
+
+// =========================
+// KẾT NỐI MONGODB ATLAS
+// =========================
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Đã kết nối MongoDB thành công!'))
   .catch(err => console.error('Lỗi kết nối DB:', err));
 
-// Câu 36: API GET - Lấy danh sách sinh viên
+// =========================
+// API GET - LẤY DANH SÁCH
+// =========================
 app.get('/api/students', async (req, res) => {
-  const students = await Student.find();
-  res.json(students);
+  try {
+    const students = await Student.find();
+    res.json(students);
+  } catch (error) {
+    console.error('Lỗi lấy danh sách sinh viên:', error);
+    res.status(500).json({
+      message: 'Lỗi server'
+    });
+  }
 });
 
-// Câu 37: API POST - Thêm sinh viên mới
+// =========================
+// API POST - THÊM SINH VIÊN
+// =========================
 app.post('/api/students', async (req, res) => {
-  const student = await Student.create(req.body);
-  res.json(student);
+  try {
+    const student = await Student.create(req.body);
+    res.json(student);
+  } catch (error) {
+    console.error('Lỗi thêm sinh viên:', error);
+    res.status(500).json({
+      message: 'Lỗi server'
+    });
+  }
 });
 
-// Câu 38: API PUT - Cập nhật sinh viên
+// =========================
+// API PUT - CẬP NHẬT
+// =========================
 app.put('/api/students/:id', async (req, res) => {
-  const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(student);
+  try {
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(student);
+  } catch (error) {
+    console.error('Lỗi cập nhật sinh viên:', error);
+    res.status(500).json({
+      message: 'Lỗi server'
+    });
+  }
 });
 
-// Câu 39: API DELETE - Xóa sinh viên
+// =========================
+// API DELETE - XÓA
+// =========================
 app.delete('/api/students/:id', async (req, res) => {
-  await Student.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Đã xóa sinh viên' });
-});
+  try {
+    await Student.findByIdAndDelete(req.params.id);
 
-// Khởi chạy server ở Port 5000
-app.listen(5000, () => {
-  console.log('Server đang chạy ở port 5000');
+    res.json({
+      message: 'Đã xóa sinh viên'
+    });
+  } catch (error) {
+    console.error('Lỗi xóa sinh viên:', error);
+    res.status(500).json({
+      message: 'Lỗi server'
+    });
+  }
+});
+// =========================
+// HEALTH CHECK
+// =========================
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'UP',
+    timestamp: new Date(),
+    uptime: process.uptime()
+  });
+});
+// =========================
+// KHỞI CHẠY SERVER
+// =========================
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server đang chạy ở port ${PORT}`);
 });
